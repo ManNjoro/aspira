@@ -1,9 +1,9 @@
 import React from 'react'
 import {Form} from "react-router-dom";
-import { createUser } from '../../../api';
+import { createUser } from '../../api';
 import '../App.css'
 
-
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 export async function action({ request }) {
     const formData = await request.formData()
     const phoneNumber = formData.get('phone')
@@ -13,12 +13,14 @@ export async function action({ request }) {
     const nationalId = formData.get('nationalId')
     const nationalIdPhoto = formData.get('idphoto')
     const mpesa = formData.get('mpesa')
-    console.log(mpesa.File.name)
-    let data
-    if (nationalId && phoneNumber && nationalIdPhoto !== '' && mpesa !== '')
+    console.log(mpesa)
+    let data;
+    if (nationalId && phoneNumber && nationalIdPhoto !== '' && nationalIdPhoto.size !== 0 || mpesa.size !== 0)
         data = await createUser({ email, phoneNumber,productId, productName, nationalId, nationalIdPhoto, mpesa})
-    else
-        console.log("Please enter all details")
+    else if(mpesa.size > MAX_FILE_SIZE) {
+        alert("File size exceeds the limit.")
+    } else
+        alert("Please enter all details")
     return null
   }
 
@@ -49,11 +51,11 @@ export default function Aspira() {
         </div>
         <div className="mb-3">
             <label htmlFor="idphoto" className="form-label">National id photo</label>
-            <input type="file" className="form-control" id="idphoto" name='idphoto' required/>
+            <input type="file" accept='.jpg, .jpeg, .png' className="form-control" id="idphoto" name='idphoto' required/>
         </div>
         <div className="mb-3">
             <label htmlFor="mpesa" className="form-label">Upload mpesa statement for the last 6 months</label>
-            <input type='file' name='mpesa' className='form-control'/>
+            <input type='file' name='mpesa' accept=".pdf" className='form-control' required/>
         </div>
         <button type="submit" className="btn btn-primary">Submit</button>
 </Form>

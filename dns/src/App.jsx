@@ -6,7 +6,9 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Aspira />} action={testAction}>
+      <Route path="/">
+      <Route index element={<Aspira />} action={testAction} />
+      <Route path='/receive' />
       </Route>
     )
   );
